@@ -7,6 +7,7 @@ defmodule Qwestr.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Qwestr.Auth, repo: Qwestr.Repo
   end
 
   pipeline :api do
