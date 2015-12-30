@@ -21,6 +21,11 @@ defmodule Qwestr.Router do
 
     resources "/users", UserController, only: [:new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+  end
+
+  scope "/manage", Qwestr do
+    pipe_through [:browser, :authenticate_user]
+
     resources "/qwests", QwestController
   end
 

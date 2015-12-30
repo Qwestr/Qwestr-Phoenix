@@ -1,6 +1,9 @@
 defmodule Qwestr.Auth do 
 	import Plug.Conn
+	import Phoenix.Controller
 	import Comeonin.Bcrypt, only: [checkpw: 2]
+
+	alias Qwestr.Router.Helpers
 
 	def init(opts) do 
 		Keyword.fetch!(opts, :repo)
@@ -11,6 +14,17 @@ defmodule Qwestr.Auth do
 		user = user_id && repo.get(Qwestr.User, user_id) 
 		assign(conn, :current_user, user)
 	end 
+
+	def authenticate_user(conn, _opts) do
+		if conn.assigns.current_user do
+			conn
+		else
+			conn
+				|> put_flash(:error, "You must be logged in to access that page") 
+				|> redirect(to: Helpers.page_path(conn, :index))
+				|> halt()
+		end 
+	end
 
 	def login(conn, user) do 
 		conn
