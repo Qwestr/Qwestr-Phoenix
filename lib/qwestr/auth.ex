@@ -32,7 +32,7 @@ defmodule Qwestr.Auth do
 				{:error, :unauthorized, conn}
 
 			true ->
-				{:error, :not_found, conn} end
+				{:error, :not_found, conn}
 		end
 	end
 end
