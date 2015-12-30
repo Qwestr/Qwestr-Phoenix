@@ -6,7 +6,8 @@ defmodule Qwestr.User do
 		field :username, :string
 		field :password, :string, virtual: true 
 		field :password_hash, :string
-		
+		has_many :qwests, Qwestr.Qwest
+
 		timestamps
 	end 
 
