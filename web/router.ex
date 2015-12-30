@@ -21,6 +21,7 @@ defmodule Qwestr.Router do
 
     resources "/users", UserController, only: [:new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+    resources "/qwests", QwestController
   end
 
   # Other scopes may use custom stacks.

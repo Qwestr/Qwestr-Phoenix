@@ -1,0 +1,18 @@
+<h2>Show qwest</h2>
+
+<ul>
+
+  <li>
+    <strong>User:</strong>
+    <%= @qwest.user_id %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @qwest.title %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: qwest_path(@conn, :edit, @qwest) %>
+<%= link "Back", to: qwest_path(@conn, :index) %>
