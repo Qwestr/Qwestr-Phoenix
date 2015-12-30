@@ -20,7 +20,7 @@ defmodule Qwestr.UserController do
 				conn
 				|> Auth.login(user)
 				|> put_flash(:info, "#{user.name} created!") 
-				|> redirect(to: user_path(conn, :index))
+				|> redirect(to: page_path(conn, :index))
 			
 			{:error, changeset} ->
 				render(conn, "new.html", changeset: changeset)
