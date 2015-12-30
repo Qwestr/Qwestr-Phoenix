@@ -4,6 +4,7 @@ defmodule Qwestr.UserController do
 	alias Qwestr.User
 	alias Qwestr.Auth
 
+  plug :scrub_params, "user" when action in [:create]
 	plug :authenticate_user when action in [:index, :show]
 
 	def new(conn, _params) do
