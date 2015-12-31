@@ -14,7 +14,7 @@ defmodule Qwestr.SessionController do
 			{:ok, conn} -> 
 				conn
 				|> put_flash(:info, "Welcome back!")
-				|> redirect(to: page_path(conn, :index)) 
+				|> redirect(to: qwest_path(conn, :index)) 
 
 			{:error, _reason, conn} ->
 				conn
