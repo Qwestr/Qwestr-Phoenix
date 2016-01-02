@@ -36,6 +36,7 @@ defmodule Qwestr.QwestControllerTest do
   test "lists all user's qwests on index", %{conn: conn, user: user} do
     user_qwest = insert_qwest(user, title: "user qwest")
     other_qwest = insert_qwest(insert_user(username: "other"), title: "another qwest")
+    
     conn = get conn, qwest_path(conn, :index)
     
     assert html_response(conn, 200) =~ ~r/Listing qwests/ 
@@ -59,6 +60,27 @@ defmodule Qwestr.QwestControllerTest do
 
     assert html_response(conn, 200) =~ "check the errors"
     assert qwest_count(Qwest) == count_before
+  end
+
+    @tag :logged_in
+  test "authorizes actions against access by other users", %{user: owner, conn: conn} do
+    qwest = insert_qwest(owner, @valid_attrs) 
+    non_owner = insert_user(username: "hackr") 
+    
+    conn = assign(conn, :current_user, non_owner)
+
+    assert_raise Ecto.NoResultsError, fn -> 
+      get(conn, qwest_path(conn, :show, qwest))
+    end
+    assert_raise Ecto.NoResultsError, fn ->
+      get(conn, qwest_path(conn, :edit, qwest)) 
+    end
+    assert_raise Ecto.NoResultsError, fn ->
+      put(conn, qwest_path(conn, :update, qwest, qwest: @valid_attrs))
+    end
+    assert_raise Ecto.NoResultsError, fn ->
+      delete(conn, qwest_path(conn, :delete, qwest)) 
+    end
   end
 
   # Private Methods
