@@ -25,6 +25,7 @@ defmodule Qwestr.ConnCase do
       import Ecto.Query, only: [from: 2]
 
       import Qwestr.Router.Helpers
+      import Qwestr.TestHelpers
 
       # The default endpoint for testing
       @endpoint Qwestr.Endpoint
