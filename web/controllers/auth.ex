@@ -4,6 +4,7 @@ defmodule Qwestr.Auth do
 	import Comeonin.Bcrypt, only: [checkpw: 2]
 
 	alias Qwestr.Router.Helpers
+	alias Qwestr.User
 
 	def init(opts) do 
 		Keyword.fetch!(opts, :repo)
@@ -11,9 +12,16 @@ defmodule Qwestr.Auth do
 
 	def call(conn, repo) do
 		user_id = get_session(conn, :user_id)
-		user = user_id && repo.get(Qwestr.User, user_id) 
-		assign(conn, :current_user, user)
-	end 
+
+		cond do
+			user = conn.assigns[:current_user] -> 
+				assign(conn, :current_user, user)
+    	user = user_id && repo.get(User, user_id) ->
+      	assign(conn, :current_user, user)
+			true ->
+				assign(conn, :current_user, nil)
+		end 
+	end
 
 	def authenticate_user(conn, _opts) do
 		if conn.assigns.current_user do
@@ -35,16 +43,13 @@ defmodule Qwestr.Auth do
 
 	def login_by_username_and_pass(conn, username, given_pass, opts) do 
 		repo = Keyword.fetch!(opts, :repo)
-		user = repo.get_by(Qwestr.User, username: username)
+		user = repo.get_by(User, username: username)
 
 		cond do
-	
 			user && checkpw(given_pass, user.password_hash) -> 
 				{:ok, login(conn, user)}
-
 			user ->
 				{:error, :unauthorized, conn}
-
 			true ->
 				{:error, :not_found, conn}
 		end
