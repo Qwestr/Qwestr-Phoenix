@@ -1,0 +1,16 @@
+defmodule Qwestr.UserRepoTest do 
+	use Qwestr.ModelCase
+
+	alias Qwestr.User
+
+	@valid_attrs %{name: "Qwestr User", username: "qwestr"}
+
+	test "converts unique_constraint on username to error" do 
+		insert_user(username: "qwestr")
+		
+		changeset = User.changeset(%User{}, @valid_attrs)
+
+		assert {:error, changeset} = Repo.insert(changeset)
+		assert {:username, "has already been taken"} in changeset.errors 
+	end
+end
