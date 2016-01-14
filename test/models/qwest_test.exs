@@ -3,7 +3,7 @@ defmodule Qwestr.QwestTest do
 
   alias Qwestr.Qwest
 
-  @valid_attrs %{title: "some content"}
+  @valid_attrs %{title: "My First Qwest"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

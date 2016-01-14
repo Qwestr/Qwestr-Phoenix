@@ -62,7 +62,7 @@ defmodule Qwestr.QwestControllerTest do
     assert qwest_count(Qwest) == count_before
   end
 
-    @tag :logged_in
+  @tag :logged_in
   test "authorizes actions against access by other users", %{user: owner, conn: conn} do
     qwest = insert_qwest(owner, @valid_attrs) 
     non_owner = insert_user(username: "hackr") 
@@ -81,6 +81,16 @@ defmodule Qwestr.QwestControllerTest do
     assert_raise Ecto.NoResultsError, fn ->
       delete(conn, qwest_path(conn, :delete, qwest)) 
     end
+  end
+
+  @tag :logged_in
+  test "complete a qwest", %{conn: conn} do
+    assert true
+  end
+
+  @tag :logged_in
+  test "restart a completed qwest", %{conn: conn} do
+    assert true
   end
 
   # Private Methods
