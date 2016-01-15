@@ -94,29 +94,35 @@ defmodule Qwestr.QwestControllerTest do
   end
 
   @tag :logged_in
-  test "completes a qwest and redirects", %{user: owner, conn: conn} do
+  test "completing a qwest redirects to index", %{user: owner, conn: conn} do
     # setup qwest
     qwest_to_complete = insert_qwest(owner, @valid_attrs)
-    # complete the qwest
-    conn = put conn, qwest_path(conn, :complete), qwest: qwest_to_complete
+    # test the connection
+    conn = get conn, qwest_path(conn, :complete, qwest_to_complete)
     # check that the connection was redirected to index
     assert redirected_to(conn) == qwest_path(conn, :index)
-    # check that the index does not contain data for the completed qwest
-    refute String.contains?(conn.resp_body, qwest_to_complete.title)
   end
 
   @tag :logged_in
-  test "restart a completed qwest and redirect", %{conn: conn} do
+  test "a completed qwest does not appear on index", %{user: owner, conn: conn} do
+    # setup qwest and complete it
+    completed_qwest = 
+      insert_qwest(owner, @valid_attrs)
+      |> complete_qwest()
+    # test the connection
+    conn = get conn, qwest_path(conn, :index)
+    # check that the connection does not contain qwest data for other qwests
+    refute String.contains?(conn.resp_body, completed_qwest.title)
+  end
+
+  @tag :logged_in
+  test "restart a completed qwest and redirects", %{conn: conn} do
     assert true
   end
 
   # Private Methods
 
   defp qwest_count(query) do 
-    Repo.one(from v in query, select: count(v.id))
-  end
-
-  defp qwest_complete_count(query) do 
     Repo.one(from v in query, select: count(v.id))
   end
 end

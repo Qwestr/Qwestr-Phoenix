@@ -18,4 +18,8 @@ defmodule Qwestr.TestHelpers do
 		|> Ecto.Model.build(:qwests, attrs)
     |> Repo.insert!()
 	end 
+
+	def complete_qwest(qwest) do 
+		qwest
+	end 
 end

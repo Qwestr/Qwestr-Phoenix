@@ -76,6 +76,15 @@ defmodule Qwestr.QwestController do
     |> redirect(to: qwest_path(conn, :index))
   end
 
+  def complete(conn, %{"id" => id}, user) do
+    qwest = Repo.get!(user_qwests(user), id) 
+
+    # Update flash message and
+    conn
+    |> put_flash(:info, "Qwest completed!")
+    |> redirect(to: qwest_path(conn, :index)) 
+  end
+
   # Private Methods
   
   defp user_qwests(user) do 
