@@ -3,6 +3,7 @@ defmodule Qwestr.Qwest do
 
   schema "qwests" do
     field :title, :string
+    field :completed, :boolean, default: false
     belongs_to :user, Qwestr.User
 
     timestamps
@@ -10,6 +11,8 @@ defmodule Qwestr.Qwest do
 
   @required_fields ~w(title)
   @optional_fields ~w()
+
+  @completed_fields ~w(completed)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -20,5 +23,11 @@ defmodule Qwestr.Qwest do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+  end
+
+  def complete_changeset(model, params) do
+    model
+    |> changeset(params)
+    |> cast(%{completed: true}, @completed_fields, [])
   end
 end
