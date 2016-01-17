@@ -23,5 +23,6 @@ defmodule Qwestr.TestHelpers do
 	def complete_qwest(qwest) do 
 		qwest
 		|> Qwest.complete_changeset()
+		|> Repo.update!()
 	end 
 end

@@ -25,9 +25,8 @@ defmodule Qwestr.Qwest do
     |> cast(params, @required_fields, @optional_fields)
   end
 
-  def complete_changeset(model, params) do
+  def complete_changeset(model) do
     model
-    |> changeset(params)
     |> cast(%{completed: true}, @completed_fields, [])
   end
 end
