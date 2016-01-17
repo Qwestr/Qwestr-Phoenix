@@ -6,6 +6,8 @@ defmodule Qwestr.QwestControllerTest do
   @valid_attrs %{title: "New Qwest"}
   @invalid_attrs %{}
 
+  @valid_update_completed_attrs %{completed: true}
+
   setup config do
     if config[:logged_in] do
       user = insert_user(username: "testr")
@@ -17,6 +19,7 @@ defmodule Qwestr.QwestControllerTest do
   end
 
   test "requires user authentication on all actions", %{conn: conn} do 
+    # check that each qwest_path requires user authentication
     Enum.each([
       get(conn, qwest_path(conn, :index)),
       get(conn, qwest_path(conn, :show, "123")), 
@@ -34,41 +37,48 @@ defmodule Qwestr.QwestControllerTest do
 
   @tag :logged_in
   test "lists all user's qwests on index", %{conn: conn, user: user} do
+    # setup qwests
     user_qwest = insert_qwest(user, title: "user qwest")
     other_qwest = insert_qwest(insert_user(username: "other"), title: "another qwest")
-    
+    # test connection
     conn = get conn, qwest_path(conn, :index)
-    
+    # check that connection contains proper qwest data for the user
     assert html_response(conn, 200) =~ ~r/Listing qwests/ 
     assert String.contains?(conn.resp_body, user_qwest.title) 
-
+    # check that the connection does not contain qwest data for other qwests
     refute String.contains?(conn.resp_body, other_qwest.title)
   end
 
   @tag :logged_in
   test "creates user qwest and redirects", %{conn: conn, user: user} do
+    # test connection
     conn = post conn, qwest_path(conn, :create), qwest: @valid_attrs 
-
+    # check that the connection was redirected to index
     assert redirected_to(conn) == qwest_path(conn, :index)
+    # check that the qwest has been created and assigned to the logged in user
     assert Repo.get_by!(Qwest, @valid_attrs).user_id == user.id
   end
 
   @tag :logged_in
   test "does not create qwest and renders errors when invalid", %{conn: conn} do
+    # get the count of qwests before trying to create one
     count_before = qwest_count(Qwest)
+    # attempt to create the qwest
     conn = post conn, qwest_path(conn, :create), qwest: @invalid_attrs 
-
+    # check that the response contains the correct error message
     assert html_response(conn, 200) =~ "check the errors"
+    # check that new new qwest was created
     assert qwest_count(Qwest) == count_before
   end
 
-    @tag :logged_in
+  @tag :logged_in
   test "authorizes actions against access by other users", %{user: owner, conn: conn} do
+    # setup qwest and non-owner user
     qwest = insert_qwest(owner, @valid_attrs) 
     non_owner = insert_user(username: "hackr") 
-    
+    # assign non_owner to user
     conn = assign(conn, :current_user, non_owner)
-
+    # check that no results are returned for the non-owner user
     assert_raise Ecto.NoResultsError, fn -> 
       get(conn, qwest_path(conn, :show, qwest))
     end
@@ -81,6 +91,33 @@ defmodule Qwestr.QwestControllerTest do
     assert_raise Ecto.NoResultsError, fn ->
       delete(conn, qwest_path(conn, :delete, qwest)) 
     end
+  end
+
+  @tag :logged_in
+  test "completing a qwest redirects to index", %{user: owner, conn: conn} do
+    # setup qwest
+    qwest_to_complete = insert_qwest(owner, @valid_attrs)
+    # test the connection
+    conn = get conn, qwest_path(conn, :complete, qwest_to_complete)
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
+  end
+
+  @tag :logged_in
+  test "a completed qwest does not appear on index", %{user: owner, conn: conn} do
+    # setup qwest and complete it
+    completed_qwest = 
+      insert_qwest(owner, @valid_attrs)
+      |> complete_qwest()
+    # test the connection
+    conn = get conn, qwest_path(conn, :index)
+    # check that the connection does not contain qwest data for other qwests
+    refute String.contains?(conn.resp_body, completed_qwest.title)
+  end
+
+  @tag :logged_in
+  test "restart a completed qwest and redirects", %{conn: conn} do
+    assert true
   end
 
   # Private Methods

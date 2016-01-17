@@ -3,7 +3,6 @@
 <table class="table">
   <thead>
     <tr>
-      <th>User</th>
       <th>Title</th>
 
       <th></th>
@@ -12,10 +11,10 @@
   <tbody>
 <%= for qwest <- @qwests do %>
     <tr>
-      <td><%= qwest.user_id %></td>
       <td><%= qwest.title %></td>
 
       <td class="text-right">
+        <%= link "Complete", to: qwest_path(@conn, :complete, qwest), class: "btn btn-submit btn-xs" %>
         <%= link "Show", to: qwest_path(@conn, :show, qwest), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: qwest_path(@conn, :edit, qwest), class: "btn btn-default btn-xs" %>
         <%= link "Delete", to: qwest_path(@conn, :delete, qwest), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>

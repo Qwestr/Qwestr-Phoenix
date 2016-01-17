@@ -1,6 +1,7 @@
 defmodule Qwestr.TestHelpers do
 	alias Qwestr.Repo
 	alias Qwestr.User
+	alias Qwestr.Qwest
 
 	def insert_user(attrs \\ %{}) do 
 		changes = Dict.merge(%{
@@ -17,5 +18,11 @@ defmodule Qwestr.TestHelpers do
 		user
 		|> Ecto.Model.build(:qwests, attrs)
     |> Repo.insert!()
+	end 
+
+	def complete_qwest(qwest) do 
+		qwest
+		|> Qwest.complete_changeset()
+		|> Repo.update!()
 	end 
 end
