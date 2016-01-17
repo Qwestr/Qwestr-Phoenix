@@ -14,6 +14,8 @@ defmodule Qwestr.Qwest do
 
   @completed_fields ~w(completed)
 
+  # Changesets
+
   @doc """
   Creates a changeset based on the `model` and `params`.
 
@@ -28,5 +30,17 @@ defmodule Qwestr.Qwest do
   def complete_changeset(model) do
     model
     |> cast(%{completed: true}, @completed_fields, [])
+  end
+
+  # Queries
+
+  def owned(user) do
+    from q in assoc(user, :qwests),
+      select: q
+  end
+
+  def uncompleted(query) do
+    from q in query,
+      where: q.completed == false
   end
 end

@@ -10,7 +10,8 @@ defmodule Qwestr.QwestController do
   end
 
   def index(conn, _params, user) do
-    qwests = Repo.all(user_qwests(user)) 
+    # list all uncompleted qwests in the index
+    qwests = Repo.all(uncompleted_qwests(user)) 
     render(conn, "index.html", qwests: qwests)
   end
 
@@ -32,7 +33,7 @@ defmodule Qwestr.QwestController do
     case Repo.insert(changeset) do
       {:ok, _qwest} ->
         conn
-        |> put_flash(:info, "Qwest created successfully.")
+        |> put_flash(:info, "Qwest created successfully!")
         |> redirect(to: qwest_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -57,7 +58,7 @@ defmodule Qwestr.QwestController do
     case Repo.update(changeset) do
       {:ok, qwest} ->
         conn
-        |> put_flash(:info, "Qwest updated successfully.")
+        |> put_flash(:info, "Qwest updated successfully!")
         |> redirect(to: qwest_path(conn, :show, qwest))
       {:error, changeset} ->
         render(conn, "edit.html", qwest: qwest, changeset: changeset)
@@ -72,22 +73,37 @@ defmodule Qwestr.QwestController do
     Repo.delete!(qwest)
 
     conn
-    |> put_flash(:info, "Qwest deleted successfully.")
+    |> put_flash(:info, "Qwest deleted successfully!")
     |> redirect(to: qwest_path(conn, :index))
   end
 
   def complete(conn, %{"id" => id}, user) do
-    qwest = Repo.get!(user_qwests(user), id) 
+    # create complete changeset
+    changeset = 
+      Repo.get!(user_qwests(user), id) 
+      |> Qwest.complete_changeset()
 
-    # Update flash message and
-    conn
-    |> put_flash(:info, "Qwest completed!")
-    |> redirect(to: qwest_path(conn, :index)) 
+    # update Repo and act accordingly
+    case Repo.update(changeset) do
+      {:ok, qwest} ->
+        conn
+        |> put_flash(:info, "Qwest completed successfully!")
+        |> redirect(to: qwest_path(conn, :index))
+      {:error, changeset} ->
+        conn
+        |> put_flash(:error, "Qwest cannot be completed")
+        |> redirect(to: qwest_path(conn, :index))
+    end
   end
 
   # Private Methods
   
   defp user_qwests(user) do 
-    assoc(user, :qwests)
+    Qwest.owned(user)
+  end
+
+  defp uncompleted_qwests(user) do 
+    Qwest.owned(user)
+    |> Qwest.uncompleted()
   end
 end
