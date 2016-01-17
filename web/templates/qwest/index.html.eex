@@ -3,7 +3,6 @@
 <table class="table">
   <thead>
     <tr>
-      <th>User</th>
       <th>Title</th>
 
       <th></th>
@@ -12,7 +11,6 @@
   <tbody>
 <%= for qwest <- @qwests do %>
     <tr>
-      <td><%= qwest.user_id %></td>
       <td><%= qwest.title %></td>
 
       <td class="text-right">
