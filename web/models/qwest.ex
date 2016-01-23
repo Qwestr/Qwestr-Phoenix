@@ -1,18 +1,19 @@
 defmodule Qwestr.Qwest do
   use Qwestr.Web, :model
 
+  alias Qwestr.RepeatEnum
+
   schema "qwests" do
     field :title, :string
     field :completed, :boolean, default: false
+    field :repeat, RepeatEnum, default: :never
     belongs_to :user, Qwestr.User
 
     timestamps
   end
 
   @required_fields ~w(title)
-  @optional_fields ~w()
-
-  @completed_fields ~w(completed)
+  @optional_fields ~w(completed, repeat)
 
   # Changesets
 
@@ -29,7 +30,7 @@ defmodule Qwestr.Qwest do
 
   def complete_changeset(model) do
     model
-    |> cast(%{completed: true}, @completed_fields, [])
+    |> cast(%{completed: true}, @required_fields, @optional_fields)
   end
 
   # Queries

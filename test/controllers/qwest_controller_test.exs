@@ -4,9 +4,15 @@ defmodule Qwestr.QwestControllerTest do
   alias Qwestr.Qwest
 
   @valid_attrs %{title: "New Qwest"}
-  @invalid_attrs %{}
 
   @valid_update_completed_attrs %{completed: true}
+
+  @valid_daily_attrs %{title: "Daily Qwest", repeat: :daily}
+  @valid_weekly_attrs %{title: "Weekly Qwest", repeat: :weekly}
+  @valid_monthly_attrs %{title: "Monthly Qwest", repeat: :monthly}
+  @valid_yearly_attrs %{title: "Yearly Qwest", repeat: :yearly}
+  
+  @invalid_attrs %{}
 
   setup config do
     if config[:logged_in] do
@@ -23,7 +29,8 @@ defmodule Qwestr.QwestControllerTest do
     Enum.each([
       get(conn, qwest_path(conn, :index)),
       get(conn, qwest_path(conn, :show, "123")), 
-      get(conn, qwest_path(conn, :edit, "123")), 
+      get(conn, qwest_path(conn, :edit, "123")),
+      get(conn, qwest_path(conn, :complete, "123")), 
       put(conn, qwest_path(conn, :update, "123", %{})), 
       post(conn, qwest_path(conn, :create, %{})), 
       delete(conn, qwest_path(conn, :delete, "123")),
@@ -60,6 +67,16 @@ defmodule Qwestr.QwestControllerTest do
   end
 
   @tag :logged_in
+  test "creates scheduled user qwest and redirects", %{conn: conn, user: user} do
+    # test connection
+    conn = post conn, qwest_path(conn, :create), qwest: @valid_daily_attrs 
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
+    # check that the qwest has been created and assigned to the logged in user
+    assert Repo.get_by!(Qwest, @valid_daily_attrs).user_id == user.id
+  end
+
+  @tag :logged_in
   test "does not create qwest and renders errors when invalid", %{conn: conn} do
     # get the count of qwests before trying to create one
     count_before = qwest_count(Qwest)
@@ -84,6 +101,9 @@ defmodule Qwestr.QwestControllerTest do
     end
     assert_raise Ecto.NoResultsError, fn ->
       get(conn, qwest_path(conn, :edit, qwest)) 
+    end
+    assert_raise Ecto.NoResultsError, fn ->
+      get(conn, qwest_path(conn, :complete, qwest)) 
     end
     assert_raise Ecto.NoResultsError, fn ->
       put(conn, qwest_path(conn, :update, qwest, qwest: @valid_attrs))

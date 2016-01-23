@@ -44,7 +44,8 @@ defmodule Qwestr.Mixfile do
       {:phoenix_html, "~> 2.1"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:cowboy, "~> 1.0"},
-      {:comeonin, "~> 1.2"}
+      {:comeonin, "~> 1.2"},
+      {:ecto_enum, "~> 0.3.0"}
     ]
   end
 
