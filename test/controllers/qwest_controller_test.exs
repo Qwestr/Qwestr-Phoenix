@@ -67,13 +67,43 @@ defmodule Qwestr.QwestControllerTest do
   end
 
   @tag :logged_in
-  test "creates scheduled user qwest and redirects", %{conn: conn, user: user} do
+  test "creates scheduled daily user qwests and redirects", %{conn: conn, user: user} do
     # test connection
     conn = post conn, qwest_path(conn, :create), qwest: @valid_daily_attrs 
     # check that the connection was redirected to index
     assert redirected_to(conn) == qwest_path(conn, :index)
     # check that the qwest has been created and assigned to the logged in user
     assert Repo.get_by!(Qwest, @valid_daily_attrs).user_id == user.id
+  end
+
+  @tag :logged_in
+  test "creates scheduled weekly user qwests and redirects", %{conn: conn, user: user} do
+    # test connection
+    conn = post conn, qwest_path(conn, :create), qwest: @valid_weekly_attrs 
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
+    # check that the qwest has been created and assigned to the logged in user
+    assert Repo.get_by!(Qwest, @valid_weekly_attrs).user_id == user.id
+  end
+
+  @tag :logged_in
+  test "creates scheduled monthly user qwests and redirects", %{conn: conn, user: user} do
+    # test connection
+    conn = post conn, qwest_path(conn, :create), qwest: @valid_monthly_attrs 
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
+    # check that the qwest has been created and assigned to the logged in user
+    assert Repo.get_by!(Qwest, @valid_monthly_attrs).user_id == user.id
+  end
+
+  @tag :logged_in
+  test "creates scheduled yearly user qwests and redirects", %{conn: conn, user: user} do
+    # test connection
+    conn = post conn, qwest_path(conn, :create), qwest: @valid_yearly_attrs 
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
+    # check that the qwest has been created and assigned to the logged in user
+    assert Repo.get_by!(Qwest, @valid_yearly_attrs).user_id == user.id
   end
 
   @tag :logged_in

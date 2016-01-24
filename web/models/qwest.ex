@@ -13,7 +13,7 @@ defmodule Qwestr.Qwest do
   end
 
   @required_fields ~w(title)
-  @optional_fields ~w(completed, repeat)
+  @optional_fields ~w(completed repeat)
 
   # Changesets
 
