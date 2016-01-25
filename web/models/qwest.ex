@@ -1,19 +1,19 @@
 defmodule Qwestr.Qwest do
   use Qwestr.Web, :model
 
-  alias Qwestr.RepeatEnum
+  alias Qwestr.Enums.Repeat
 
   schema "qwests" do
     field :title, :string
     field :completed, :boolean, default: false
-    field :repeat, RepeatEnum, default: :never
+    field :repeat, Repeat.Values, default: :never
     belongs_to :user, Qwestr.User
 
     timestamps
   end
 
-  @required_fields ~w(title)
-  @optional_fields ~w(completed repeat)
+  @required_fields ~w(title repeat)
+  @optional_fields ~w(completed)
 
   # Changesets
 

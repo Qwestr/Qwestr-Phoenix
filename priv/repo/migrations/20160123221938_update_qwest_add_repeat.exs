@@ -3,7 +3,7 @@ defmodule Qwestr.Repo.Migrations.UpdateQwestAddRepeat do
 
   def change do
   	alter table(:qwests) do
-			add :repeat, :integer, default: 0
+			add :repeat, :int, default: 0
 		end
   end
 end

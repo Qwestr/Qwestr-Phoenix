@@ -3,6 +3,8 @@ defmodule Qwestr.QwestControllerTest do
 
   alias Qwestr.Qwest
 
+  # Constants
+
   @valid_attrs %{title: "New Qwest"}
 
   @valid_update_completed_attrs %{completed: true}
@@ -14,6 +16,8 @@ defmodule Qwestr.QwestControllerTest do
   
   @invalid_attrs %{}
 
+  # Setup
+
   setup config do
     if config[:logged_in] do
       user = insert_user(username: "testr")
@@ -23,6 +27,8 @@ defmodule Qwestr.QwestControllerTest do
       {:ok, conn: conn()}
     end
   end
+
+  # Tests
 
   test "requires user authentication on all actions", %{conn: conn} do 
     # check that each qwest_path requires user authentication

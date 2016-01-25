@@ -1,6 +1,5 @@
 <h2>New qwest</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: qwest_path(@conn, :create) %>
+<%= render "form.html", changeset: @changeset, action: qwest_path(@conn, :create), repeat_options: @repeat_options %>
 
 <%= link "Back", to: qwest_path(@conn, :index) %>
