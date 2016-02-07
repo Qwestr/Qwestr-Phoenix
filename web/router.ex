@@ -27,6 +27,7 @@ defmodule Qwestr.Router do
     pipe_through [:browser, :authenticate_user]
 
     resources "/qwests", QwestController  
+        
     get "/qwests/:id/complete", QwestController, :complete
     get "/qwests/:id/restart", QwestController, :restart
   end

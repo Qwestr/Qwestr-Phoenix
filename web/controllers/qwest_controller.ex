@@ -12,10 +12,11 @@ defmodule Qwestr.QwestController do
 
   def index(conn, _params, user) do
     # create view content
-    qwests = Repo.all(uncompleted_qwests(user)) 
+    uncompleted_qwests = Repo.all(uncompleted_qwests(user))
+    completed_qwests = Repo.all(completed_qwests(user)) 
 
     # render view
-    render(conn, "index.html", qwests: qwests)
+    render(conn, "index.html", uncompleted_qwests: uncompleted_qwests, completed_qwests: completed_qwests)
   end
 
   def new(conn, _params, user) do 
@@ -145,5 +146,10 @@ defmodule Qwestr.QwestController do
   defp uncompleted_qwests(user) do 
     Qwest.owned(user)
     |> Qwest.uncompleted()
+  end
+
+  defp completed_qwests(user) do 
+    Qwest.owned(user)
+    |> Qwest.completed()
   end
 end

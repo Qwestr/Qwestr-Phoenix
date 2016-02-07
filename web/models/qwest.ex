@@ -49,4 +49,9 @@ defmodule Qwestr.Qwest do
     from q in query,
       where: q.completed == false
   end
+
+  def completed(query) do
+    from q in query,
+      where: q.completed == true
+  end
 end
