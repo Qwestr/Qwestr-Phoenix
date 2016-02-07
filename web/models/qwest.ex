@@ -33,6 +33,11 @@ defmodule Qwestr.Qwest do
     |> cast(%{completed: true}, @required_fields, @optional_fields)
   end
 
+  def restart_changeset(model) do
+    model
+    |> cast(%{completed: false}, @required_fields, @optional_fields)
+  end
+
   # Queries
 
   def owned(user) do

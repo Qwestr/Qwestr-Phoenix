@@ -172,8 +172,15 @@ defmodule Qwestr.QwestControllerTest do
   end
 
   @tag :logged_in
-  test "restart a completed qwest and redirects", %{conn: conn} do
-    assert true
+  test "restarting a completed qwest redirects to index", %{user: owner, conn: conn} do
+    # setup qwest and complete it
+    completed_qwest = 
+      insert_qwest(owner, @valid_attrs)
+      |> complete_qwest()
+    # test the connection
+    conn = get conn, qwest_path(conn, :restart, completed_qwest)
+    # check that the connection was redirected to index
+    assert redirected_to(conn) == qwest_path(conn, :index)
   end
 
   # Private Methods

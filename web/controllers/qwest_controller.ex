@@ -117,6 +117,25 @@ defmodule Qwestr.QwestController do
     end
   end
 
+  def restart(conn, %{"id" => id}, user) do
+    # create restart changeset
+    changeset = 
+      Repo.get!(user_qwests(user), id) 
+      |> Qwest.restart_changeset()
+
+    # update repo and redirect accordingly
+    case Repo.update(changeset) do
+      {:ok, qwest} ->
+        conn
+        |> put_flash(:info, "Qwest restarted successfully!")
+        |> redirect(to: qwest_path(conn, :index))
+      {:error, changeset} ->
+        conn
+        |> put_flash(:error, "Qwest cannot be restarted")
+        |> redirect(to: qwest_path(conn, :index))
+    end
+  end
+
   # Private Methods
   
   defp user_qwests(user) do 
