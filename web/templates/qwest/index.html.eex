@@ -1,15 +1,15 @@
-<h2>Qwests</h2>
+<h2>Qwest List</h2>
 
 <%= link "New qwest", to: qwest_path(@conn, :new) %>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#uncompleted">Uncompleted</a></li>
+  <li class="active"><a data-toggle="tab" href="#incomplete">Incomplete</a></li>
   <li><a data-toggle="tab" href="#completed">Completed</a></li>
 </ul>
 
 <div class="tab-content">
-  <div id="uncompleted" class="tab-pane fade in active">
-    <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @uncompleted_qwests %>
+  <div id="incomplete" class="tab-pane fade in active">
+    <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_qwests %>
   </div>
   <div id="completed" class="tab-pane fade">
     <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_qwests %>

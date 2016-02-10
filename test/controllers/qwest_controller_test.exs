@@ -56,7 +56,7 @@ defmodule Qwestr.QwestControllerTest do
     # test connection
     conn = get conn, qwest_path(conn, :index)
     # check that connection contains proper qwest data for the user
-    assert html_response(conn, 200) =~ ~r/Listing qwests/ 
+    assert html_response(conn, 200) =~ ~r/Qwest List/ 
     assert String.contains?(conn.resp_body, user_qwest.title) 
     # check that the connection does not contain qwest data for other qwests
     refute String.contains?(conn.resp_body, other_qwest.title)
@@ -157,18 +157,6 @@ defmodule Qwestr.QwestControllerTest do
     conn = get conn, qwest_path(conn, :complete, qwest_to_complete)
     # check that the connection was redirected to index
     assert redirected_to(conn) == qwest_path(conn, :index)
-  end
-
-  @tag :logged_in
-  test "a completed qwest does not appear on index", %{user: owner, conn: conn} do
-    # setup qwest and complete it
-    completed_qwest = 
-      insert_qwest(owner, @valid_attrs)
-      |> complete_qwest()
-    # test the connection
-    conn = get conn, qwest_path(conn, :index)
-    # check that the connection does not contain qwest data for other qwests
-    refute String.contains?(conn.resp_body, completed_qwest.title)
   end
 
   @tag :logged_in

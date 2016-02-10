@@ -45,7 +45,7 @@ defmodule Qwestr.Qwest do
       select: q
   end
 
-  def uncompleted(query) do
+  def incomplete(query) do
     from q in query,
       where: q.completed == false
   end
