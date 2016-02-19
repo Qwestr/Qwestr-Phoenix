@@ -12,11 +12,31 @@ defmodule Qwestr.QwestController do
 
   def index(conn, _params, user) do
     # create view content
-    incomplete_qwests = Repo.all(incomplete_qwests(user))
-    completed_qwests = Repo.all(completed_qwests(user)) 
+    incomplete_daily_qwests = Repo.all(incomplete_qwests(user, :daily))
+    incomplete_weekly_qwests = Repo.all(incomplete_qwests(user, :weekly))
+    incomplete_monthly_qwests = Repo.all(incomplete_qwests(user, :monthly))
+    incomplete_yearly_qwests = Repo.all(incomplete_qwests(user, :yearly))
+    incomplete_epic_qwests = Repo.all(incomplete_qwests(user, :never))
+
+    completed_daily_qwests = Repo.all(completed_qwests(user, :daily))
+    completed_weekly_qwests = Repo.all(completed_qwests(user, :weekly))
+    completed_monthly_qwests = Repo.all(completed_qwests(user, :monthly))
+    completed_yearly_qwests = Repo.all(completed_qwests(user, :yearly))
+    completed_epic_qwests = Repo.all(completed_qwests(user, :never))
 
     # render view
-    render(conn, "index.html", incomplete_qwests: incomplete_qwests, completed_qwests: completed_qwests)
+    render(conn, "index.html", 
+      incomplete_daily_qwests: incomplete_daily_qwests,
+      incomplete_weekly_qwests: incomplete_weekly_qwests,
+      incomplete_monthly_qwests: incomplete_monthly_qwests,
+      incomplete_yearly_qwests: incomplete_yearly_qwests,
+      incomplete_epic_qwests: incomplete_epic_qwests,
+      completed_daily_qwests: completed_daily_qwests,
+      completed_weekly_qwests: completed_weekly_qwests,
+      completed_monthly_qwests: completed_monthly_qwests,
+      completed_yearly_qwests: completed_yearly_qwests,
+      completed_epic_qwests: completed_epic_qwests
+    )
   end
 
   def new(conn, _params, user) do 
@@ -143,13 +163,13 @@ defmodule Qwestr.QwestController do
     Qwest.owned(user)
   end
 
-  defp incomplete_qwests(user) do 
+  defp incomplete_qwests(user, repeat) do 
     Qwest.owned(user)
-    |> Qwest.incomplete()
+    |> Qwest.incomplete(repeat)
   end
 
-  defp completed_qwests(user) do 
+  defp completed_qwests(user, repeat) do 
     Qwest.owned(user)
-    |> Qwest.completed()
+    |> Qwest.completed(repeat)
   end
 end

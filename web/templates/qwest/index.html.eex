@@ -7,11 +7,57 @@
   <li><a data-toggle="tab" href="#completed">Completed</a></li>
 </ul>
 
-<div class="tab-content">
+<div id="tab-content" class="tab-content">
   <div id="incomplete" class="tab-pane fade in active">
-    <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_qwests %>
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#incomplete-daily">Daily</a></li>
+      <li><a data-toggle="tab" href="#incomplete-weekly">Weekly</a></li>
+      <li><a data-toggle="tab" href="#incomplete-monthly">Monthly</a></li>
+      <li><a data-toggle="tab" href="#incomplete-yearly">Yearly</a></li>
+      <li><a data-toggle="tab" href="#incomplete-epic">Epic</a></li>
+    </ul>
+    <div id="incomplete-tab-content" class="tab-content">
+      <div id="incomplete-daily" class="tab-pane fade in active">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_daily_qwests %>
+      </div>
+      <div id="incomplete-weekly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_weekly_qwests %>
+      </div>
+        <div id="incomplete-monthly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_monthly_qwests %>
+      </div>
+        <div id="incomplete-yearly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_yearly_qwests %>
+      </div>
+        <div id="incomplete-epic" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @incomplete_epic_qwests %>
+      </div>
+    </div>
   </div>
   <div id="completed" class="tab-pane fade">
-    <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_qwests %>
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#completed-daily">Daily</a></li>
+      <li><a data-toggle="tab" href="#completed-weekly">Weekly</a></li>
+      <li><a data-toggle="tab" href="#completed-monthly">Monthly</a></li>
+      <li><a data-toggle="tab" href="#completed-yearly">Yearly</a></li>
+      <li><a data-toggle="tab" href="#completed-epic">Epic</a></li>
+    </ul>
+    <div id="completed-tab-content" class="tab-content">
+      <div id="completed-daily" class="tab-pane fade in active">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_daily_qwests %>
+      </div>
+      <div id="completed-weekly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_weekly_qwests %>
+      </div>
+        <div id="completed-monthly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_monthly_qwests %>
+      </div>
+        <div id="completed-yearly" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_yearly_qwests %>
+      </div>
+        <div id="completed-epic" class="tab-pane fade">
+        <%= render Qwestr.QwestView, "list.html", conn: @conn, qwests: @completed_epic_qwests %>
+      </div>
+    </div>
   </div>
 </div>

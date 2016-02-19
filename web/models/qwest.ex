@@ -45,13 +45,15 @@ defmodule Qwestr.Qwest do
       select: q
   end
 
-  def incomplete(query) do
+  def incomplete(query, repeat) do
     from q in query,
       where: q.completed == false
+        and q.repeat == ^repeat
   end
 
-  def completed(query) do
+  def completed(query, repeat) do
     from q in query,
       where: q.completed == true
+        and q.repeat == ^repeat
   end
 end
