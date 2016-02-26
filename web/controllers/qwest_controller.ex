@@ -12,17 +12,17 @@ defmodule Qwestr.QwestController do
 
   def index(conn, _params, user) do
     # create view content
-    incomplete_daily_qwests = Repo.all(incomplete_qwests(user, :daily))
-    incomplete_weekly_qwests = Repo.all(incomplete_qwests(user, :weekly))
-    incomplete_monthly_qwests = Repo.all(incomplete_qwests(user, :monthly))
-    incomplete_yearly_qwests = Repo.all(incomplete_qwests(user, :yearly))
-    incomplete_epic_qwests = Repo.all(incomplete_qwests(user, :never))
+    incomplete_daily_qwests = Repo.all(Qwest.incomplete_for_user(user, :daily))
+    incomplete_weekly_qwests = Repo.all(Qwest.incomplete_for_user(user, :weekly))
+    incomplete_monthly_qwests = Repo.all(Qwest.incomplete_for_user(user, :monthly))
+    incomplete_yearly_qwests = Repo.all(Qwest.incomplete_for_user(user, :yearly))
+    incomplete_epic_qwests = Repo.all(Qwest.incomplete_for_user(user, :never))
 
-    completed_daily_qwests = Repo.all(completed_qwests(user, :daily))
-    completed_weekly_qwests = Repo.all(completed_qwests(user, :weekly))
-    completed_monthly_qwests = Repo.all(completed_qwests(user, :monthly))
-    completed_yearly_qwests = Repo.all(completed_qwests(user, :yearly))
-    completed_epic_qwests = Repo.all(completed_qwests(user, :never))
+    completed_daily_qwests = Repo.all(Qwest.completed_for_user(user, :daily))
+    completed_weekly_qwests = Repo.all(Qwest.completed_for_user(user, :weekly))
+    completed_monthly_qwests = Repo.all(Qwest.completed_for_user(user, :monthly))
+    completed_yearly_qwests = Repo.all(Qwest.completed_for_user(user, :yearly))
+    completed_epic_qwests = Repo.all(Qwest.completed_for_user(user, :never))
 
     # render view
     render(conn, "index.html", 
@@ -72,7 +72,7 @@ defmodule Qwestr.QwestController do
 
   def show(conn, %{"id" => id}, user) do 
     # create view content
-    qwest = Repo.get!(user_qwests(user), id) 
+    qwest = Repo.get!(Qwest.owned(user), id) 
 
     # render view
     render(conn, "show.html", qwest: qwest)
@@ -80,7 +80,7 @@ defmodule Qwestr.QwestController do
 
   def edit(conn, %{"id" => id}, user) do
     # create view content
-    qwest = Repo.get!(user_qwests(user), id)
+    qwest = Repo.get!(Qwest.owned(user), id)
     changeset = Qwest.changeset(qwest)
     repeat_options = Repeat.select_map()
 
@@ -90,7 +90,7 @@ defmodule Qwestr.QwestController do
 
   def update(conn, %{"id" => id, "qwest" => qwest_params}, user) do 
     # create view content
-    qwest = Repo.get!(user_qwests(user), id)
+    qwest = Repo.get!(Qwest.owned(user), id)
     changeset = Qwest.changeset(qwest, qwest_params)
     repeat_options = Repeat.select_map()
     
@@ -107,7 +107,7 @@ defmodule Qwestr.QwestController do
 
   def delete(conn, %{"id" => id}, user) do 
     # get qwest
-    qwest = Repo.get!(user_qwests(user), id)
+    qwest = Repo.get!(Qwest.owned(user), id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
@@ -122,16 +122,16 @@ defmodule Qwestr.QwestController do
   def complete(conn, %{"id" => id}, user) do
     # create complete changeset
     changeset = 
-      Repo.get!(user_qwests(user), id) 
+      Repo.get!(Qwest.owned(user), id) 
       |> Qwest.complete_changeset()
 
     # update repo and redirect accordingly
     case Repo.update(changeset) do
-      {:ok, qwest} ->
+      {:ok, _qwest} ->
         conn
         |> put_flash(:info, "Qwest completed successfully!")
         |> redirect(to: qwest_path(conn, :index))
-      {:error, changeset} ->
+      {:error, _changeset} ->
         conn
         |> put_flash(:error, "Qwest cannot be completed")
         |> redirect(to: qwest_path(conn, :index))
@@ -141,35 +141,19 @@ defmodule Qwestr.QwestController do
   def restart(conn, %{"id" => id}, user) do
     # create restart changeset
     changeset = 
-      Repo.get!(user_qwests(user), id) 
+      Repo.get!(Qwest.owned(user), id) 
       |> Qwest.restart_changeset()
 
     # update repo and redirect accordingly
     case Repo.update(changeset) do
-      {:ok, qwest} ->
+      {:ok, _qwest} ->
         conn
         |> put_flash(:info, "Qwest restarted successfully!")
         |> redirect(to: qwest_path(conn, :index))
-      {:error, changeset} ->
+      {:error, _changeset} ->
         conn
         |> put_flash(:error, "Qwest cannot be restarted")
         |> redirect(to: qwest_path(conn, :index))
     end
-  end
-
-  # Private Methods
-  
-  defp user_qwests(user) do 
-    Qwest.owned(user)
-  end
-
-  defp incomplete_qwests(user, repeat) do 
-    Qwest.owned(user)
-    |> Qwest.incomplete(repeat)
-  end
-
-  defp completed_qwests(user, repeat) do 
-    Qwest.owned(user)
-    |> Qwest.completed(repeat)
   end
 end

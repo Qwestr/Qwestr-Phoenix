@@ -51,9 +51,19 @@ defmodule Qwestr.Qwest do
         and q.repeat == ^repeat
   end
 
+  def incomplete_for_user(user, repeat) do
+    owned(user)
+    |> incomplete(repeat)
+  end
+
   def completed(query, repeat) do
     from q in query,
       where: q.completed == true
         and q.repeat == ^repeat
+  end
+
+    def completed_for_user(user, repeat) do
+    owned(user)
+    |> completed(repeat)
   end
 end
