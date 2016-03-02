@@ -1,4 +1,6 @@
 defmodule Qwestr.TestHelpers do
+	use Timex
+
 	alias Qwestr.Repo
 	alias Qwestr.User
 	alias Qwestr.Qwest
@@ -20,9 +22,14 @@ defmodule Qwestr.TestHelpers do
     |> Repo.insert!()
 	end 
 
-	def complete_qwest(qwest) do 
+	def complete_qwest(qwest, attrs \\ %{}) do 
 		qwest
-		|> Qwest.complete_changeset()
+		|> Qwest.complete_changeset(attrs)
 		|> Repo.update!()
+	end
+
+	def datetime_before_current_date(number, type) do
+		 Date.local
+		 	|> Date.shift([{type, number}])
 	end 
 end
