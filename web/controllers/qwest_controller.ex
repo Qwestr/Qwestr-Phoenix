@@ -12,11 +12,11 @@ defmodule Qwestr.QwestController do
 
   def index(conn, _params, user) do
     # create view content
-    incomplete_daily_qwests = Repo.all(Qwest.incomplete_for_user(user, :daily))
-    incomplete_weekly_qwests = Repo.all(Qwest.incomplete_for_user(user, :weekly))
-    incomplete_monthly_qwests = Repo.all(Qwest.incomplete_for_user(user, :monthly))
-    incomplete_yearly_qwests = Repo.all(Qwest.incomplete_for_user(user, :yearly))
-    incomplete_epic_qwests = Repo.all(Qwest.incomplete_for_user(user, :never))
+    active_daily_qwests = Repo.all(Qwest.active_for_user(user, :daily))
+    active_weekly_qwests = Repo.all(Qwest.active_for_user(user, :weekly))
+    active_monthly_qwests = Repo.all(Qwest.active_for_user(user, :monthly))
+    active_yearly_qwests = Repo.all(Qwest.active_for_user(user, :yearly))
+    active_epic_qwests = Repo.all(Qwest.active_for_user(user, :never))
 
     completed_daily_qwests = Repo.all(Qwest.completed_for_user(user, :daily))
     completed_weekly_qwests = Repo.all(Qwest.completed_for_user(user, :weekly))
@@ -26,11 +26,11 @@ defmodule Qwestr.QwestController do
 
     # render view
     render(conn, "index.html", 
-      incomplete_daily_qwests: incomplete_daily_qwests,
-      incomplete_weekly_qwests: incomplete_weekly_qwests,
-      incomplete_monthly_qwests: incomplete_monthly_qwests,
-      incomplete_yearly_qwests: incomplete_yearly_qwests,
-      incomplete_epic_qwests: incomplete_epic_qwests,
+      active_daily_qwests: active_daily_qwests,
+      active_weekly_qwests: active_weekly_qwests,
+      active_monthly_qwests: active_monthly_qwests,
+      active_yearly_qwests: active_yearly_qwests,
+      active_epic_qwests: active_epic_qwests,
       completed_daily_qwests: completed_daily_qwests,
       completed_weekly_qwests: completed_weekly_qwests,
       completed_monthly_qwests: completed_monthly_qwests,

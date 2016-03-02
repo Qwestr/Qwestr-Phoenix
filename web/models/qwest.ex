@@ -47,7 +47,7 @@ defmodule Qwestr.Qwest do
       select: q
   end
 
-  def incomplete(query, repeat) when repeat == :daily do
+  def active(query, repeat) when repeat == :daily do
     from q in query,
       where: q.repeat == ^repeat
         and (
@@ -55,8 +55,7 @@ defmodule Qwestr.Qwest do
             or q.completed_at <= datetime_add(^Ecto.DateTime.utc, -1, "day")
         ) 
   end
-
-  def incomplete(query, repeat) when repeat == :weekly do
+  def active(query, repeat) when repeat == :weekly do
     from q in query,
       where: q.repeat == ^repeat
         and (
@@ -64,8 +63,7 @@ defmodule Qwestr.Qwest do
             or q.completed_at <= datetime_add(^Ecto.DateTime.utc, -1, "week")
         ) 
   end
-
-  def incomplete(query, repeat) when repeat == :monthly do
+  def active(query, repeat) when repeat == :monthly do
     from q in query,
       where: q.repeat == ^repeat
         and (
@@ -73,8 +71,7 @@ defmodule Qwestr.Qwest do
             or q.completed_at <= datetime_add(^Ecto.DateTime.utc, -1, "month")
         ) 
   end
-
-  def incomplete(query, repeat) when repeat == :yearly do
+  def active(query, repeat) when repeat == :yearly do
     from q in query,
       where: q.repeat == ^repeat
         and (
@@ -82,17 +79,18 @@ defmodule Qwestr.Qwest do
             or q.completed_at <= datetime_add(^Ecto.DateTime.utc, -1, "year")
         ) 
   end
-
-  def incomplete(query, repeat) do
+  def active(query, repeat) do
     from q in query,
       where: q.repeat == ^repeat
         and q.completed == false
   end
 
-  def incomplete_for_user(user, repeat) do
+  def active_for_user(user, repeat) do
     owned(user)
-    |> incomplete(repeat)
+    |> active(repeat)
   end
+
+  # TODO: create multiple completed function clauses for repeat types
 
   def completed(query, repeat) do
     from q in query,

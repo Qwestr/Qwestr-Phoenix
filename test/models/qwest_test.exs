@@ -96,11 +96,11 @@ defmodule Qwestr.QwestTest do
     insert_qwest(other_user, @valid_yearly_attrs)
     
     # test assertions
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :never))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :daily))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :weekly))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :monthly))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :yearly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :never))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :daily))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :weekly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :monthly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :yearly))) === @one
   end
 
   test "query for all active qwests returns valid scheduled completed qwests", %{user: owner} do
@@ -115,10 +115,10 @@ defmodule Qwestr.QwestTest do
       |> complete_qwest(@valid_yearly_completed_attrs)
     
     # test assertions
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :daily))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :weekly))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :monthly))) === @one
-    assert Enum.count(Repo.all(Qwest.incomplete_for_user(owner, :yearly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :daily))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :weekly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :monthly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :yearly))) === @one
   end
 
   test "query for all completed qwests owned by a user returns with valid set", %{user: owner} do
