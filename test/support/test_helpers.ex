@@ -28,8 +28,14 @@ defmodule Qwestr.TestHelpers do
 		|> Repo.update!()
 	end
 
-	def datetime_before_current_date(number, type) do
-		 Date.local
+	def restart_qwest(qwest, attrs \\ %{}) do 
+		qwest
+		|> Qwest.restart_changeset(attrs)
+		|> Repo.update!()
+	end
+
+	def date_before_current_date(number, type) do
+		 Date.now
 		 	|> Date.shift([{type, number}])
 	end 
 end

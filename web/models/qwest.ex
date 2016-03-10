@@ -17,6 +17,9 @@ defmodule Qwestr.Qwest do
   @required_fields ~w(title repeat)
   @optional_fields ~w(completed completed_at)
 
+  @complete_changeset_default_attrs %{completed: true, completed_at: Timex.Date.now}
+  @restart_changeset_default_attrs %{completed: false, completed_at: nil}
+
   # Changesets
 
   @doc """
@@ -32,12 +35,12 @@ defmodule Qwestr.Qwest do
 
   def complete_changeset(model, params \\ %{}) do
     model
-    |> cast(Map.merge(params, %{completed: true}), @required_fields, @optional_fields)
+    |> cast(Map.merge(@complete_changeset_default_attrs, params), @required_fields, @optional_fields)
   end
 
   def restart_changeset(model, params \\ %{}) do
     model
-    |> cast(Map.merge(params, %{completed: false}), @required_fields, @optional_fields)
+    |> cast(Map.merge(@restart_changeset_default_attrs, params), @required_fields, @optional_fields)
   end
 
   # Queries
@@ -90,8 +93,38 @@ defmodule Qwestr.Qwest do
     |> active(repeat)
   end
 
-  # TODO: create multiple completed function clauses for repeat types
-
+  def completed(query, repeat) when repeat == :daily do
+    from q in query,
+      where: q.repeat == ^repeat
+        and (
+          q.completed == true
+            and q.completed_at > datetime_add(^Ecto.DateTime.utc, -1, "day")
+        ) 
+  end
+  def completed(query, repeat) when repeat == :weekly do
+    from q in query,
+      where: q.repeat == ^repeat
+        and (
+          q.completed == true
+            and q.completed_at > datetime_add(^Ecto.DateTime.utc, -1, "week")
+        ) 
+  end
+  def completed(query, repeat) when repeat == :monthly do
+    from q in query,
+      where: q.repeat == ^repeat
+        and (
+          q.completed == true
+            and q.completed_at > datetime_add(^Ecto.DateTime.utc, -1, "month")
+        ) 
+  end
+  def completed(query, repeat) when repeat == :yearly do
+    from q in query,
+      where: q.repeat == ^repeat
+        and (
+          q.completed == true
+            and q.completed_at > datetime_add(^Ecto.DateTime.utc, -1, "year")
+        ) 
+  end
   def completed(query, repeat) do
     from q in query,
       where: q.repeat == ^repeat

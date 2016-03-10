@@ -4,9 +4,9 @@ defmodule Qwestr.QwestTest do
 
   alias Qwestr.Qwest
 
-  # Constants
+  # Constants 
 
-  @one 1
+  @one  1
 
   @valid_attrs %{title: "My First Qwest"}
   @valid_daily_attrs %{title: "My First Daily Qwest", repeat: :daily}
@@ -14,10 +14,10 @@ defmodule Qwestr.QwestTest do
   @valid_monthly_attrs %{title: "My First Monthly Qwest", repeat: :monthly}
   @valid_yearly_attrs %{title: "My First Yearly Qwest", repeat: :yearly}
   
-  @valid_daily_completed_attrs %{completed_at: datetime_before_current_date(-1, :days)}
-  @valid_weekly_completed_attrs %{completed_at: datetime_before_current_date(-1, :weeks)}
-  @valid_monthly_completed_attrs %{completed_at: datetime_before_current_date(-1, :months)}
-  @valid_yearly_completed_attrs %{completed_at: datetime_before_current_date(-1, :years)}
+  @valid_daily_expired_completed_attrs %{completed_at: date_before_current_date(-1, :days)}
+  @valid_weekly_expired_completed_attrs %{completed_at: date_before_current_date(-1, :weeks)}
+  @valid_monthly_expired_completed_attrs %{completed_at: date_before_current_date(-1, :months)}
+  @valid_yearly_expired_completed_attrs %{completed_at: date_before_current_date(-1, :years)}
 
   @invalid_attrs %{}
 
@@ -72,6 +72,14 @@ defmodule Qwestr.QwestTest do
     refute restart_changeset.valid?
   end
 
+  test "completing a qwest updates the completion date attribute", %{user: owner} do
+    # setup qwest and complete
+    qwest = insert_qwest(owner, @valid_attrs)
+      |> complete_qwest
+    # test assertions
+    assert qwest.completed_at != nil
+  end
+
   test "query for all qwests owned by a user returns with valid set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_attrs)
@@ -80,7 +88,7 @@ defmodule Qwestr.QwestTest do
     assert Enum.count(Repo.all(Qwest.owned(owner))) === @one
   end
 
-  test "query for all active qwests owned by a user returns with valid set", %{user: owner} do
+  test "query for all active qwests owned by a user returns with valid active set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_attrs)
     insert_qwest(owner, @valid_daily_attrs)
@@ -103,16 +111,16 @@ defmodule Qwestr.QwestTest do
     assert Enum.count(Repo.all(Qwest.active_for_user(owner, :yearly))) === @one
   end
 
-  test "query for all active qwests returns valid scheduled completed qwests", %{user: owner} do
+  test "query for all completed scheduled qwests returns with valid active set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_daily_attrs)
-      |> complete_qwest(@valid_daily_completed_attrs)
+      |> complete_qwest(@valid_daily_expired_completed_attrs)
     insert_qwest(owner, @valid_weekly_attrs)
-      |> complete_qwest(@valid_weekly_completed_attrs)
+      |> complete_qwest(@valid_weekly_expired_completed_attrs)
     insert_qwest(owner, @valid_monthly_attrs)
-      |> complete_qwest(@valid_monthly_completed_attrs)
+      |> complete_qwest(@valid_monthly_expired_completed_attrs)
     insert_qwest(owner, @valid_yearly_attrs)
-      |> complete_qwest(@valid_yearly_completed_attrs)
+      |> complete_qwest(@valid_yearly_expired_completed_attrs)
     
     # test assertions
     assert Enum.count(Repo.all(Qwest.active_for_user(owner, :daily))) === @one
@@ -121,7 +129,33 @@ defmodule Qwestr.QwestTest do
     assert Enum.count(Repo.all(Qwest.active_for_user(owner, :yearly))) === @one
   end
 
-  test "query for all completed qwests owned by a user returns with valid set", %{user: owner} do
+  test "query for all restarted completed qwests returns with valid active set", %{user: owner} do
+    # setup qwests
+    insert_qwest(owner, @valid_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_daily_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_weekly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_monthly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_yearly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    
+    # test assertions
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :never))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :daily))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :weekly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :monthly))) === @one
+    assert Enum.count(Repo.all(Qwest.active_for_user(owner, :yearly))) === @one
+  end
+
+  test "query for all completed qwests owned by a user returns with valid completed set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_attrs)
       |> complete_qwest
@@ -152,5 +186,49 @@ defmodule Qwestr.QwestTest do
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :weekly))) === @one
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :monthly))) === @one
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :yearly))) === @one
+  end
+
+  test "query for all completed scheduled qwests returns with valid completed set", %{user: owner} do
+    # setup qwests
+    insert_qwest(owner, @valid_daily_attrs)
+      |> complete_qwest(@valid_daily_expired_completed_attrs)
+    insert_qwest(owner, @valid_weekly_attrs)
+      |> complete_qwest(@valid_weekly_expired_completed_attrs)
+    insert_qwest(owner, @valid_monthly_attrs)
+      |> complete_qwest(@valid_monthly_expired_completed_attrs)
+    insert_qwest(owner, @valid_yearly_attrs)
+      |> complete_qwest(@valid_yearly_expired_completed_attrs)
+    
+    # test assertions    
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :daily))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :weekly))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :monthly))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :yearly))) === @one
+  end
+
+  test "query for all restarted completed qwests returns with valid completed set", %{user: owner} do
+    # setup qwests
+    insert_qwest(owner, @valid_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_daily_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_weekly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_monthly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    insert_qwest(owner, @valid_yearly_attrs)
+      |> complete_qwest
+      |> restart_qwest
+    
+    # test assertions
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :never))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :daily))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :weekly))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :monthly))) === @one
+    refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :yearly))) === @one
   end
 end
