@@ -188,7 +188,7 @@ defmodule Qwestr.QwestTest do
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :yearly))) === @one
   end
 
-  test "query for all completed scheduled qwests returns with valid completed set", %{user: owner} do
+  test "query for all completed expired scheduled qwests returns with empty completed set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_daily_attrs)
       |> complete_qwest(@valid_daily_expired_completed_attrs)
@@ -206,7 +206,7 @@ defmodule Qwestr.QwestTest do
     refute Enum.count(Repo.all(Qwest.completed_for_user(owner, :yearly))) === @one
   end
 
-  test "query for all restarted completed qwests returns with valid completed set", %{user: owner} do
+  test "query for all restarted qwests returns with empty completed set", %{user: owner} do
     # setup qwests
     insert_qwest(owner, @valid_attrs)
       |> complete_qwest
