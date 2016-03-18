@@ -2,15 +2,26 @@
 
 <ul>
 
+<!--
+	TODO: Update user show info
+
   <li>
     <strong>User:</strong>
     <%= @qwest.user_id %>
   </li>
+-->
 
-  <li>
+	<li>
     <strong>Title:</strong>
     <%= @qwest.title %>
   </li>
+
+  <%= if @qwest.completed do %>
+	  <li>
+	    <strong>Completed At:</strong>
+	    <%= Timex.DateFormat.format!(@qwest.completed_at, "{ISO:Extended}") %>
+	  </li>
+	<%= end %>
 
 </ul>
 
