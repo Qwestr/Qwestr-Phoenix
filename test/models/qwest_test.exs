@@ -180,15 +180,6 @@ defmodule Qwestr.QwestTest do
     insert_qwest(other_user, @valid_yearly_attrs)
       |> complete_qwest
     
-    # TODO: determine why the completed date sometimes is incorrect/ old
-    #
-    # uncomment the following code to test:
-    #
-    # IO.puts "daily active"
-    # IO.inspect Repo.all(Qwest.active_for_user(owner, :daily))
-    # IO.puts "daily completed"
-    # IO.inspect Repo.all(Qwest.completed_for_user(owner, :daily))
-
     # test assertions
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :never))) === @one
     assert Enum.count(Repo.all(Qwest.completed_for_user(owner, :daily))) === @one

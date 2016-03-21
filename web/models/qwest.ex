@@ -1,5 +1,6 @@
 defmodule Qwestr.Qwest do
   use Qwestr.Web, :model
+  use Timex
 
   alias Qwestr.Enums.Repeat
   alias Qwestr.User
@@ -17,9 +18,6 @@ defmodule Qwestr.Qwest do
   @required_fields ~w(title repeat)
   @optional_fields ~w(completed completed_at)
 
-  @complete_changeset_default_attrs %{completed: true, completed_at: Timex.Date.now}
-  @restart_changeset_default_attrs %{completed: false, completed_at: nil}
-
   # Changesets
 
   @doc """
@@ -34,13 +32,17 @@ defmodule Qwestr.Qwest do
   end
 
   def complete_changeset(model, params \\ %{}) do
+    default_params = %{completed: true, completed_at: Date.now}
+    
     model
-    |> cast(Map.merge(@complete_changeset_default_attrs, params), @required_fields, @optional_fields)
+    |> cast(Map.merge(default_params, params), @required_fields, @optional_fields)
   end
 
   def restart_changeset(model, params \\ %{}) do
+    default_params = %{completed: false, completed_at: nil}
+
     model
-    |> cast(Map.merge(@restart_changeset_default_attrs, params), @required_fields, @optional_fields)
+    |> cast(Map.merge(default_params, params), @required_fields, @optional_fields)
   end
 
   # Queries
