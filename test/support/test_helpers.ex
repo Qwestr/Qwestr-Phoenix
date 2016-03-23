@@ -35,7 +35,7 @@ defmodule Qwestr.TestHelpers do
 	end
 
 	def date_before_current_date(number, type) do
-		 Date.now
-		 	|> Date.shift([{type, number}])
+		 DateTime.now
+		 	|> DateTime.shift([{type, number}])
 	end 
 end

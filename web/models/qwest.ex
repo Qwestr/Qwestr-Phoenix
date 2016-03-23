@@ -32,7 +32,7 @@ defmodule Qwestr.Qwest do
   end
 
   def complete_changeset(model, params \\ %{}) do
-    default_params = %{completed: true, completed_at: Date.now}
+    default_params = %{completed: true, completed_at: DateTime.now}
     
     model
     |> cast(Map.merge(default_params, params), @required_fields, @optional_fields)

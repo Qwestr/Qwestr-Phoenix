@@ -47,8 +47,8 @@ defmodule Qwestr.Mixfile do
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 1.2"},
       {:ecto_enum, "~> 0.3.0"},
-      {:timex, "~> 1.0.2"},
-      {:timex_ecto, "~> 0.9.0"}
+      {:timex, "~> 2.1.1"},
+      {:timex_ecto, "~> 1.0.3"}
     ]
   end
 
