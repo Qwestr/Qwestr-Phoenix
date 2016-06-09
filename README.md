@@ -1,6 +1,10 @@
 # Qwestr
 
-To start your Phoenix app:
+A live version of the app can be found at:
+
+https://qwestr.herokuapp.com
+
+To run your own development version of app:
 
   1. Install dependencies with `mix deps.get`
   2. Create and migrate your database with `mix ecto.create && mix ecto.migrate`
