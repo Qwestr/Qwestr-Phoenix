@@ -1,6 +1,5 @@
-<h2>Edit qwest</h2>
+<h2>Edit Qwest</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: qwest_path(@conn, :update, @qwest) %>
+<%= render "form.html", changeset: @changeset, action: qwest_path(@conn, :update, @qwest), repeat_options: @repeat_options %>
 
 <%= link "Back", to: qwest_path(@conn, :index) %>

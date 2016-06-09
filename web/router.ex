@@ -26,8 +26,10 @@ defmodule Qwestr.Router do
   scope "/manage", Qwestr do
     pipe_through [:browser, :authenticate_user]
 
-    resources "/qwests", QwestController
+    resources "/qwests", QwestController  
+        
     get "/qwests/:id/complete", QwestController, :complete
+    get "/qwests/:id/restart", QwestController, :restart
   end
 
   # Other scopes may use custom stacks.

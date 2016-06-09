@@ -1,16 +1,26 @@
-<h2>Show qwest</h2>
+<h2>Show Qwest</h2>
 
 <ul>
+
+<!--
+	TODO: Update user show info
 
   <li>
     <strong>User:</strong>
     <%= @qwest.user_id %>
   </li>
+-->
 
-  <li>
+	<li>
     <strong>Title:</strong>
     <%= @qwest.title %>
   </li>
+
+  <%= if @qwest.completed do %>
+	  <li>
+	    <strong>Completed At:</strong> <%= Timex.format!(@qwest.completed_at, "%Y-%m-%d %I:%M %p", :strftime) %> (UTC)
+	  </li>
+	<%= end %>
 
 </ul>
 
