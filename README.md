@@ -22,6 +22,18 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
 
+## Contributions
+
+Contributing to the source code would be very much appreciated! 
+
+Here's a list of some changes that would help improve the app:
+
+- Creation of sub-qwests (which could also contain sub-qwests)
+- Allowing a user to share/ assign qwests to other users
+- Tracking how many times a repeatable qwest has been completed
+- Creation of a qwest description field and WYSIWYG editor for the field
+- General code cleanup
+
 ## License
 
 Copyright 2016 Qwestr
