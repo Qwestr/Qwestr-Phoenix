@@ -4,6 +4,10 @@
 /deps
 /*.ez
 
+# OS generated files
+.DS_Store
+.DS_Store?
+
 # Generate on crash by the VM
 erl_crash.dump
 
